@@ -11,7 +11,6 @@ export const SignUp = () => {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault()
-		debugger
 		const msg = await actions.signUp(email, password, passwordConfirmation);
 
 		alert(msg)

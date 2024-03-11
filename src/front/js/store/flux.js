@@ -48,26 +48,27 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ demo: demo });
 			},
 			signUp: async (email, password, passwordConfirmation) => {
+				const bodyData = {
+					email: email,
+					password: password,
+					passwordConfirmation: passwordConfirmation
+				}
+				
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					}, 
+					body: JSON.stringify(bodyData)
+				};
+
 				try {
-
-					const bodyData = {
-						email: email,
-						password: password,
-						passwordConfirmation: passwordConfirmation
-					}
-					console.log(bodyData)
-					const options = {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json'
-						}, 
-						body: JSON.stringify(bodyData)
-					};
-
+					console.log("Getting backend url")
+					console.log(process.env.BACKEND_URL)
 					// fetching data from the backend
 					const response = await fetch(`${process.env.BACKEND_URL}/api/sign_up`, options);
-					console.log(response);
-					debugger
+					
+					
 					const msg = await response.json();
 					console.log(msg)
 

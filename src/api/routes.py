@@ -10,9 +10,8 @@ from flask_jwt_extended import create_access_token
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
-#CORS(api)
+CORS(api)
 
-CORS(api, resources={r"/api/*": {"origins": "https://fantastic-parakeet-x5wjgq4p5gw53g-3000.app.github.dev/"}})
 
 @api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
@@ -65,7 +64,3 @@ def sign_in():
     # Notice that we are passing in the actual sqlalchemy user object here
     access_token = create_access_token(identity=user)
     return jsonify(access_token=access_token)
-
-
-#@api.route('/profile', methods=['GET'])
-#def manage_sign_up():
