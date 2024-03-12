@@ -93,7 +93,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 						body: JSON.stringify(bodyData)
 					};
-
+					
 					// fetching data from the backend
 					const response = await fetch(`${process.env.BACKEND_URL}/api/sign_in`, options);
 					const msg = await response.json()
