@@ -1,19 +1,32 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 import rigoImageUrl from "../../img/rigo-baby.jpg";
 import "../../styles/home.css";
+import { useNavigate } from 'react-router-dom';
 
 export const SignIn = () => {
 	const { store, actions } = useContext(Context);
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
+	const navigate = useNavigate();
 
 	const handleSubmit = async (event) => {
 		event.preventDefault()
 		console.log(email, password);
-		const msg = await actions.signIn(email, password);
+		try {
+			const msg = await actions.signIn(email, password);
+			console.log(msg);
+			if(msg['error'] == null || msg['error'] == undefined) {
+				let myToken = "aDSA45F$%!sd&sdfSDFSDFytrefERF";
+				localStorage.setItem("token", myToken);
 
-		alert(msg)
+				navigate('/profile');
+			}
+		} catch (e) {
+			console.log(e);
+		}
+
+		
 	}
 	try {
 		return (
@@ -68,3 +81,9 @@ export const SignIn = () => {
 	}
 	
 };
+
+function redirect() {
+	useEffect(() => {
+		navigate('/profile');
+	});
+}

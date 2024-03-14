@@ -4,14 +4,17 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
-from flask_cors import CORS
-from flask_jwt_extended import create_access_token
+from flask_cors import CORS, cross_origin
+from flask_jwt_extended import create_access_token, JWTManager
+#import hash_function
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
-CORS(api)
+CORS(api, methods=["GET", "POST", "PUT"])
 
+#api.config["JWT_SECRET_KEY"] = "super-secret"  # ¡Cambia las palabras "super-secret" por otra cosa!
+#jwt = JWTManager(api)
 
 @api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
@@ -40,7 +43,8 @@ def manage_sign_up():
 
     if password != password_confirmation:
         return jsonify({"error": "Please verify that password is equal to your password confirmation field"}), 400
-    
+    #password = hash_function(request_data['password'])
+
     user = User(email=email, password=password, is_active=True)
     db.session.add(user)
     db.session.commit() 
@@ -51,16 +55,33 @@ def manage_sign_up():
 
     return jsonify(response_body), 200
 
-
+@cross_origin()  # Agrega el decorador cross_origin aquí
 @api.route("/sign_in", methods=["POST"])
 def sign_in():
-    username = request.json.get("username", None)
+    email = request.json.get("email", None)
     password = request.json.get("password", None)
+    #return jsonify({"msg": "test"})
 
-    user = User.query.filter_by(username=username).one_or_none()
-    if not user or not user.check_password(password):
-        return jsonify("Wrong username or password"), 401
+    user = User.query.filter_by(email=email,password=password).one_or_none()
+    
+    if user:
+        user_data = {
+            "id": user.id,
+            "email": user.email,
+        }
+        #return(jsonify(user_data))
+        access_token = create_access_token(identity=user.id)
+        return jsonify(access_token=access_token)
+       # return jsonify(user_data)
+    else:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    #if not user or not user.check_password(password):
+    #    return jsonify("Wrong username or password"), 401
 
     # Notice that we are passing in the actual sqlalchemy user object here
-    access_token = create_access_token(identity=user)
-    return jsonify(access_token=access_token)
+
+
+@api.route('/profile', methods=['GET'])
+def profile():
+    print("profile")

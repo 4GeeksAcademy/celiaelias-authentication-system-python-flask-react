@@ -88,6 +88,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					const options = {
 						method: 'POST',
+						mode: 'cors',
 						headers: {
 							'Content-Type': 'application/json'
 						},

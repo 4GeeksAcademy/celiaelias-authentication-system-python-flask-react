@@ -1,10 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import rigoImageUrl from "../../img/rigo-baby.jpg";
 import "../../styles/home.css";
+import { useNavigate } from 'react-router-dom';
 
 export const Profile = () => {
 	const { store, actions } = useContext(Context);
+	const navigate = useNavigate();
+
+	const myToken = localStorage.getItem("token");
+	useEffect(() => {
+		if (!myToken) {
+			navigate('/sign_in');
+		}
+	});
 
 	return (
 		<div className="text-center mt-5">
