@@ -9,6 +9,8 @@ from flask_jwt_extended import create_access_token, JWTManager
 #import hash_function
 
 api = Blueprint('api', __name__)
+api.config["JWT_SECRET_KEY"] = "super-secret" 
+jwt = JWTManager(api)
 
 # Allow CORS requests to this API
 CORS(api, methods=["GET", "POST", "PUT"])
